@@ -1,0 +1,30 @@
+{
+  "name": "echidna",
+  "version": "1.0.0",
+  "description": "Echidna - The Witch of Greed's Wallet Hunter",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [
+    "crypto",
+    "wallet",
+    "bip39",
+    "blockchain"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "axios": "^1.6.7",
+    "bip32": "^4.0.0",
+    "bip39": "^3.1.0",
+    "bitcoinjs-lib": "^6.1.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.11.1",
+    "express": "^4.18.3",
+    "tiny-secp256k1": "^2.2.5"
+  }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#9b59b6">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Echidna - The Witch of Greed</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/echidna.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/echidna.png">
+  <link rel="shortcut icon" href="/echidna.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/echidna.png">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Notification Bar -->
+    <div id="notification-bar" class="notification-bar hidden">
+      <div class="notification-content">
+        <span class="notification-icon">🎉</span>
+        <span id="notification-text"></span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="title-section">
+          <img src="/echidna.png" alt="Echidna - The Witch of Greed" class="echidna-avatar" onerror="this.src='/echidna.jpg'" />
+          <div>
+            <h1 class="title">ECHIDNA</h1>
+            <p class="subtitle">The Witch of Greed's Wallet Hunter</p>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="start-btn" class="btn btn-primary">START</button>
+          <button id="pause-btn" class="btn btn-warning" disabled>PAUSE</button>
+          <button id="stop-btn" class="btn btn-danger" disabled>STOP</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Wallets Checked</div>
+          <div class="stat-value" id="total-wallets">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Hits Found</div>
+          <div class="stat-value hit" id="total-hits">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Checks/Second</div>
+          <div class="stat-value" id="checks-per-second">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Runtime</div>
+          <div class="stat-value" id="runtime">0s</div>
+        </div>
+        <div class="stat-card blockchain-card">
+          <div class="stat-label">Blockchains Covered</div>
+          <div class="blockchain-tags">
+            <span class="blockchain-tag eth">ETH</span>
+            <span class="blockchain-tag bsc">BSC</span>
+            <span class="blockchain-tag polygon">POLYGON</span>
+            <span class="blockchain-tag avalanche">AVAX</span>
+            <span class="blockchain-tag arbitrum">ARB</span>
+            <span class="blockchain-tag btc">BTC</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Probability</div>
+          <div class="stat-value small" id="probability">1 in 10^30</div>
+        </div>
+      </div>
+
+      <!-- Telemetry Terminal -->
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <span class="terminal-title">📡 TELEMETRY STREAM</span>
+          <div class="terminal-indicators">
+            <span class="indicator" id="status-indicator"></span>
+            <span id="status-text">IDLE</span>
+          </div>
+        </div>
+        <div class="terminal" id="terminal">
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">System initialized. Awaiting commands...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Found Wallets -->
+      <div class="found-section" id="found-section" style="display:none;">
+        <h2 class="section-title">🎯 FOUND WALLETS</h2>
+        <div id="found-wallets" class="found-wallets"></div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>"My insatiable thirst for knowledge knows no bounds." - Echidna</p>
+      <p class="footer-note">Probability of success: Astronomically low. But greed demands we try.</p>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+  
+  <!-- Service Worker for PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered'))
+        .catch(err => console.log('Service Worker registration failed'));
+    }
+  </script>
+</body>
+</html>

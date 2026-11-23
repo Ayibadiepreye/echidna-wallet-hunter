@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: echidna
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      # Add these in Render Dashboard (Settings → Environment):
+      # - ALCHEMY_API_KEY (optional)
+      # - BLOCKCYPHER_TOKEN (optional)
+      # - SUPABASE_URL (optional)
+      # - SUPABASE_KEY (optional)
+      # - WEBHOOK_URL (optional)
