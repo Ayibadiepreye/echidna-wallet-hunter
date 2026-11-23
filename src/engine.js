@@ -76,41 +76,53 @@ export class EchidnaEngine {
       }
 
       try {
-        // BATCH MODE: Generate 500 wallets, check all in ONE request!
-        const batchSize = 500;
-        const wallets = [];
-        const addresses = [];
+        // ULTRA BATCH MODE: 5 parallel batches of 10k = 50,000 wallets at once!
+        const parallelBatches = 5;
+        const promises = [];
         
-        for (let i = 0; i < batchSize; i++) {
-          const wallet = this.generator.generateWallet();
-          wallets.push(wallet);
-          addresses.push(wallet.addresses.ethereum);
+        for (let b = 0; b < parallelBatches; b++) {
+          promises.push(this.processBatch());
         }
         
-        // ONE RPC call for 500 wallets!
-        const results = await this.checker.checkBatch(addresses);
-        
-        // Process results
-        for (let i = 0; i < wallets.length; i++) {
-          this.stats.totalWallets++;
-          
-          if (results[i].hasBalance) {
-            await this.handleHit(wallets[i], [results[i]]);
-          }
-        }
-        
-        // Log every 500 wallets (each batch)
-        this.stats.lastCheck = new Date().toISOString();
-        const runtime = Date.now() - new Date(this.stats.startedAt).getTime();
-        this.stats.checksPerSecond = (this.stats.totalWallets / (runtime / 1000)).toFixed(2);
-        this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | BATCH MODE`, 'info');
-        await this.database.saveState(this.stats);
+        await Promise.all(promises);
         
       } catch (error) {
         this.log(`❌ Error: ${error.message}`, 'error');
         await this.sleep(500);
       }
     }
+  }
+
+  async processBatch() {
+    // Generate 10,000 wallets
+    const batchSize = 10000;
+    const wallets = [];
+    const addresses = [];
+    
+    for (let i = 0; i < batchSize; i++) {
+      const wallet = this.generator.generateWallet();
+      wallets.push(wallet);
+      addresses.push(wallet.addresses.ethereum);
+    }
+    
+    // ONE RPC call for 10,000 wallets!
+    const results = await this.checker.checkBatch(addresses);
+    
+    // Process results
+    for (let i = 0; i < wallets.length; i++) {
+      this.stats.totalWallets++;
+      
+      if (results[i].hasBalance) {
+        await this.handleHit(wallets[i], [results[i]]);
+      }
+    }
+    
+    // Log every batch
+    this.stats.lastCheck = new Date().toISOString();
+    const runtime = Date.now() - new Date(this.stats.startedAt).getTime();
+    this.stats.checksPerSecond = (this.stats.totalWallets / (runtime / 1000)).toFixed(2);
+    this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | 10K BATCH MODE`, 'info');
+    await this.database.saveState(this.stats);
   }
 
   async processWallet() {

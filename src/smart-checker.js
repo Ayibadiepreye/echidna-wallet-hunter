@@ -10,7 +10,7 @@ export class SmartChecker {
   constructor() {
     this.requestCount = 0;
     this.endpointIndex = 0;
-    this.batchSize = 500; // Check 500 wallets per batch!
+    this.batchSize = 10000; // Check 10,000 wallets per batch!
     
     this.endpoints = [
       // Ankr free endpoints (no auth required)
@@ -60,8 +60,10 @@ export class SmartChecker {
       }));
 
       const response = await axios.post(endpoint, batchRequest, {
-        timeout: 5000, // Longer timeout for batch
-        headers: { 'Content-Type': 'application/json' }
+        timeout: 30000, // 30 second timeout for huge batches
+        headers: { 'Content-Type': 'application/json' },
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity
       });
 
       this.requestCount++;
