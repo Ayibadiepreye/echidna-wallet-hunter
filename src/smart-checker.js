@@ -94,7 +94,7 @@ export class SmartChecker {
         params: [address, 'latest'],
         id: 1
       }, {
-        timeout: 1500,
+        timeout: 800, // Faster timeout
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -121,28 +121,13 @@ export class SmartChecker {
   }
 
   /**
-   * SMART CHECK: Pre-screen then check balance
-   * This is 2-3x faster because most addresses are unused!
+   * ULTRA FAST: Skip pre-screen, check balance directly
+   * Pre-screen adds latency - better to just check balance once
    */
   async checkFast(wallet) {
     const address = wallet.addresses.ethereum;
     
-    // STEP 1: Fast pre-screen (50-100ms)
-    const everUsed = await this.hasEverBeenUsed(address);
-    
-    if (!everUsed) {
-      // Address never used = definitely zero balance!
-      this.skippedCount++;
-      return [{
-        chain: 'Ethereum',
-        balance: '0',
-        hasBalance: false,
-        address,
-        skipped: true
-      }];
-    }
-    
-    // STEP 2: Only check balance if address has been used
+    // Single request = faster!
     const result = await this.checkBalance(address);
     return [result];
   }

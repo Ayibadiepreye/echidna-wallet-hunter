@@ -76,9 +76,9 @@ export class EchidnaEngine {
       }
 
       try {
-        // 40 parallel - OPTIMIZED for 1M+/day on Render free tier
+        // 100 parallel - MAXIMUM SPEED
         const promises = [];
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 100; i++) {
           promises.push(this.processWallet());
         }
         await Promise.all(promises);
