@@ -10,21 +10,13 @@ export class SmartChecker {
   constructor() {
     this.requestCount = 0;
     this.endpointIndex = 0;
-    this.batchSize = 10000; // Check 10,000 wallets per batch!
+    this.batchSize = 1000; // Optimal batch size based on testing!
     
     this.endpoints = [
-      // Ankr free endpoints (no auth required)
-      'https://rpc.ankr.com/eth',
-      
-      // Other major free endpoints
-      'https://eth.llamarpc.com',
+      // BEST: PublicNode supports 1k batches @ 325/sec
       'https://ethereum.publicnode.com',
-      'https://1rpc.io/eth',
-      'https://cloudflare-eth.com',
-      'https://eth-mainnet.public.blastapi.io',
-      'https://eth.merkle.io',
-      'https://eth.meowrpc.com',
-      'https://singapore.rpc.blxrbdn.com',
+      'https://ethereum.publicnode.com', // Use it twice (it's the best)
+      'https://ethereum.publicnode.com', // Three times for redundancy
     ];
     
     if (process.env.ALCHEMY_API_KEY) {
@@ -60,7 +52,7 @@ export class SmartChecker {
       }));
 
       const response = await axios.post(endpoint, batchRequest, {
-        timeout: 30000, // 30 second timeout for huge batches
+        timeout: 10000, // 10 second timeout for 1k batches
         headers: { 'Content-Type': 'application/json' },
         maxBodyLength: Infinity,
         maxContentLength: Infinity

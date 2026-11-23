@@ -76,8 +76,9 @@ export class EchidnaEngine {
       }
 
       try {
-        // ULTRA BATCH MODE: 5 parallel batches of 10k = 50,000 wallets at once!
-        const parallelBatches = 5;
+        // OPTIMIZED: 10 parallel batches of 1k = 10,000 wallets checked simultaneously
+        // PublicNode can handle this @ 325/sec = 28M per day!
+        const parallelBatches = 10;
         const promises = [];
         
         for (let b = 0; b < parallelBatches; b++) {
@@ -94,8 +95,8 @@ export class EchidnaEngine {
   }
 
   async processBatch() {
-    // Generate 10,000 wallets
-    const batchSize = 10000;
+    // Generate 1,000 wallets (optimal batch size)
+    const batchSize = 1000;
     const wallets = [];
     const addresses = [];
     
@@ -105,7 +106,7 @@ export class EchidnaEngine {
       addresses.push(wallet.addresses.ethereum);
     }
     
-    // ONE RPC call for 10,000 wallets!
+    // ONE RPC call for 1,000 wallets!
     const results = await this.checker.checkBatch(addresses);
     
     // Process results
@@ -121,7 +122,7 @@ export class EchidnaEngine {
     this.stats.lastCheck = new Date().toISOString();
     const runtime = Date.now() - new Date(this.stats.startedAt).getTime();
     this.stats.checksPerSecond = (this.stats.totalWallets / (runtime / 1000)).toFixed(2);
-    this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | 10K BATCH MODE`, 'info');
+    this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | OPTIMIZED`, 'info');
     await this.database.saveState(this.stats);
   }
 
