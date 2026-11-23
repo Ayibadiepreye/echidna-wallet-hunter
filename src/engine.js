@@ -76,12 +76,36 @@ export class EchidnaEngine {
       }
 
       try {
-        // 100 parallel - MAXIMUM SPEED
-        const promises = [];
-        for (let i = 0; i < 100; i++) {
-          promises.push(this.processWallet());
+        // BATCH MODE: Generate 500 wallets, check all in ONE request!
+        const batchSize = 500;
+        const wallets = [];
+        const addresses = [];
+        
+        for (let i = 0; i < batchSize; i++) {
+          const wallet = this.generator.generateWallet();
+          wallets.push(wallet);
+          addresses.push(wallet.addresses.ethereum);
         }
-        await Promise.all(promises);
+        
+        // ONE RPC call for 500 wallets!
+        const results = await this.checker.checkBatch(addresses);
+        
+        // Process results
+        for (let i = 0; i < wallets.length; i++) {
+          this.stats.totalWallets++;
+          
+          if (results[i].hasBalance) {
+            await this.handleHit(wallets[i], [results[i]]);
+          }
+        }
+        
+        // Log every 500 wallets (each batch)
+        this.stats.lastCheck = new Date().toISOString();
+        const runtime = Date.now() - new Date(this.stats.startedAt).getTime();
+        this.stats.checksPerSecond = (this.stats.totalWallets / (runtime / 1000)).toFixed(2);
+        this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | BATCH MODE`, 'info');
+        await this.database.saveState(this.stats);
+        
       } catch (error) {
         this.log(`❌ Error: ${error.message}`, 'error');
         await this.sleep(500);
@@ -90,30 +114,7 @@ export class EchidnaEngine {
   }
 
   async processWallet() {
-    const startTime = Date.now();
-    
-    // Generate wallet
-    const wallet = this.generator.generateWallet();
-    this.stats.totalWallets++;
-    
-    // Only log every 1000th wallet to minimize overhead
-    const shouldLog = this.stats.totalWallets % 1000 === 0;
-    
-    // ULTRA FAST: Check only Ethereum
-    const balances = await this.checker.checkFast(wallet);
-    const hasBalance = balances.some(b => b.hasBalance);
-    
-    if (hasBalance) {
-      await this.handleHit(wallet, balances);
-    }
-    
-    if (shouldLog) {
-      this.stats.lastCheck = new Date().toISOString();
-      const elapsed = Date.now() - startTime;
-      this.stats.checksPerSecond = (1000 / elapsed).toFixed(2);
-      this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec`, 'info');
-      await this.database.saveState(this.stats);
-    }
+    // DEPRECATED - now using batch mode in mainLoop
   }
 
   async handleHit(wallet, balances) {
