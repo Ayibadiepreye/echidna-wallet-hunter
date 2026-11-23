@@ -13,10 +13,13 @@ export class SmartChecker {
     this.batchSize = 1000; // Optimal batch size based on testing!
     
     this.endpoints = [
-      // BEST: PublicNode supports 1k batches @ 325/sec
+      // PublicNode is THE BEST - supports 1k batches!
+      // They have multiple regional endpoints - use them all!
       'https://ethereum.publicnode.com',
-      'https://ethereum.publicnode.com', // Use it twice (it's the best)
-      'https://ethereum.publicnode.com', // Three times for redundancy
+      'https://ethereum-rpc.publicnode.com', 
+      'https://eth.public-rpc.com',
+      
+      // Also add Alchemy for backup (100 batch limit but still useful)
     ];
     
     if (process.env.ALCHEMY_API_KEY) {
