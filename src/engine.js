@@ -83,19 +83,13 @@ export class EchidnaEngine {
       console.log('🔄 Starting batch cycle...');
       
       try {
-        // 100 parallel batches of 100 = 10,000 wallets checked simultaneously
-        // 100 addresses @ 176/sec = 0.57 seconds per batch
-        // 100 parallel = 10k every ~1 second = 10k/sec TARGET MET!
-        const parallelBatches = 100;
-        const promises = [];
+        // Render network is slow - run batches sequentially with delay
+        const parallelBatches = 1;
         
-        for (let b = 0; b < parallelBatches; b++) {
-          promises.push(this.processBatch());
-        }
+        await this.processBatch();
         
-        console.log(`⏳ Waiting for ${parallelBatches} batch(es) to complete...`);
-        await Promise.all(promises);
-        console.log('✅ Batch cycle complete');
+        // Small delay between batches to avoid overwhelming Render's network
+        await this.sleep(100);
         
       } catch (error) {
         this.log(`❌ Error: ${error.message}`, 'error');
