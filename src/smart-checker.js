@@ -14,19 +14,9 @@ export class SmartChecker {
     
     this.endpoints = [
       // PublicNode is THE BEST - supports 1k batches, NO API KEY NEEDED!
-      // Multiple regional endpoints to distribute load
       'https://ethereum.publicnode.com',
-      'https://ethereum-rpc.publicnode.com', 
-      'https://eth.public-rpc.com',
-      
-      // Add more free endpoints that might support batching
-      'https://rpc.flashbots.net', // Flashbots public RPC
-      'https://virginia.rpc.blxrbdn.com', // bloXroute
-      'https://uk.rpc.blxrbdn.com', // bloXroute UK
-      'https://singapore.rpc.blxrbdn.com', // bloXroute Singapore
-      'https://rpc.mevblocker.io', // MEV Blocker
-      
-      // Also add Alchemy for backup (100 batch limit but still useful)
+      'https://ethereum.publicnode.com', // Use it multiple times
+      'https://ethereum.publicnode.com', // It's the most reliable
     ];
     
     if (process.env.ALCHEMY_API_KEY) {

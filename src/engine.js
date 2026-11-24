@@ -76,9 +76,8 @@ export class EchidnaEngine {
       }
 
       try {
-        // MAXIMUM SPEED: 30 parallel batches of 1k = 30,000 wallets checked simultaneously!
-        // Target: 10,000 wallets/sec (30k every 3 seconds)
-        const parallelBatches = 30;
+        // Start with 10 parallel, can increase once stable
+        const parallelBatches = 10;
         const promises = [];
         
         for (let b = 0; b < parallelBatches; b++) {
