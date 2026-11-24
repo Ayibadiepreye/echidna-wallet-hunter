@@ -13,7 +13,9 @@ export class SmartChecker {
     this.batchSize = 100; // TESTED: PublicNode can handle 100, not 1000!
     
     this.endpoints = [
-      // Back to PublicNode but sequential batches for Render
+      // PublicNode - works great, supports 100-address batches
+      'https://ethereum.publicnode.com',
+      'https://ethereum.publicnode.com',
       'https://ethereum.publicnode.com',
     ];
     
