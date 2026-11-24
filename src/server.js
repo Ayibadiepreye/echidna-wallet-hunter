@@ -144,6 +144,18 @@ const PORT = config.port;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🌟 Echidna server running on port ${PORT}`);
   console.log(`🌐 Access at: http://localhost:${PORT}`);
+}).on('error', (error) => {
+  console.error('❌ Server failed to start:', error);
+  process.exit(1);
+});
+
+// Handle uncaught errors
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught exception:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled rejection at:', promise, 'reason:', reason);
 });
 
 export { app, engine };
