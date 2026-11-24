@@ -73,12 +73,15 @@ export class EchidnaEngine {
   }
 
   async mainLoop() {
+    console.log('🔄 Main loop started');
     while (this.isRunning) {
       if (this.isPaused) {
         await this.sleep(1000);
         continue;
       }
 
+      console.log('🔄 Starting batch cycle...');
+      
       try {
         // Start with 1 for testing, then increase
         const parallelBatches = 1;
@@ -88,13 +91,16 @@ export class EchidnaEngine {
           promises.push(this.processBatch());
         }
         
+        console.log(`⏳ Waiting for ${parallelBatches} batch(es) to complete...`);
         await Promise.all(promises);
+        console.log('✅ Batch cycle complete');
         
       } catch (error) {
         this.log(`❌ Error: ${error.message}`, 'error');
         await this.sleep(500);
       }
     }
+    console.log('🛑 Main loop exited');
   }
 
   async processBatch() {
