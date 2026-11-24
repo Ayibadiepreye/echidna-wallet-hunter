@@ -55,9 +55,22 @@ app.get('/api/logs', (req, res) => {
   res.json(engine.logs);
 });
 
-// Health check for Render
+// Health check for UptimeRobot / Render
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const status = engine.getStatus();
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    isRunning: status.isRunning,
+    totalWallets: status.stats.totalWallets,
+    checksPerSecond: status.stats.checksPerSecond,
+  });
+});
+
+// Simple ping endpoint (fastest response)
+app.get('/ping', (req, res) => {
+  res.send('pong');
 });
 
 // PWA Manifest
