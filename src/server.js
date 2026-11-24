@@ -43,11 +43,11 @@ app.get('/api/status', (req, res) => {
   }
 });
 
-app.post('/api/start', async (req, res) => {
+app.post('/api/start', (req, res) => {
   try {
     console.log('📡 Start request received');
-    await engine.start();
-    console.log('✅ Engine started successfully');
+    engine.start(); // Don't await - it runs in background
+    console.log('✅ Engine start initiated');
     res.json({ success: true, message: 'Engine started' });
   } catch (error) {
     console.error('❌ Start error:', error);
