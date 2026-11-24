@@ -56,7 +56,7 @@ export class SmartChecker {
       console.log(`📡 Sending batch request...`);
       
       const response = await axios.post(endpoint, batchRequest, {
-        timeout: 10000, // 10 second timeout for 1k batches
+        timeout: 30000, // 30 second timeout - Render may be slow
         headers: { 'Content-Type': 'application/json' },
         maxBodyLength: Infinity,
         maxContentLength: Infinity
