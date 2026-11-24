@@ -43,6 +43,8 @@ export class SmartChecker {
     try {
       const endpoint = this.getEndpoint();
       
+      console.log(`🔍 Checking batch of ${addresses.length} addresses via ${endpoint}`);
+      
       // Build batch request - one eth_getBalance per address
       const batchRequest = addresses.map((address, index) => ({
         jsonrpc: '2.0',
@@ -51,6 +53,8 @@ export class SmartChecker {
         id: index
       }));
 
+      console.log(`📡 Sending batch request...`);
+      
       const response = await axios.post(endpoint, batchRequest, {
         timeout: 10000, // 10 second timeout for 1k batches
         headers: { 'Content-Type': 'application/json' },
@@ -58,6 +62,8 @@ export class SmartChecker {
         maxContentLength: Infinity
       });
 
+      console.log(`✅ Got batch response`);
+      
       this.requestCount++;
       
       // Parse batch response
@@ -86,6 +92,7 @@ export class SmartChecker {
         };
       });
     } catch (error) {
+      console.error(`❌ Batch check error:`, error.message);
       // On error, return all as zero balance
       return addresses.map(address => ({
         chain: 'Ethereum',
