@@ -173,21 +173,37 @@ export class EchidnaEngine {
   }
 
   getStatus() {
-    const runtime = this.stats.startedAt 
-      ? Date.now() - new Date(this.stats.startedAt).getTime()
-      : 0;
-    
-    return {
-      isRunning: this.isRunning,
-      isPaused: this.isPaused,
-      stats: {
-        ...this.stats,
-        runtime,
-        runtimeFormatted: this.formatRuntime(runtime),
-      },
-      logs: this.logs.slice(0, 20),
-      probability: this.generator.getStats(),
-    };
+    try {
+      const runtime = this.stats.startedAt 
+        ? Date.now() - new Date(this.stats.startedAt).getTime()
+        : 0;
+      
+      return {
+        isRunning: this.isRunning,
+        isPaused: this.isPaused,
+        stats: {
+          ...this.stats,
+          runtime,
+          runtimeFormatted: this.formatRuntime(runtime),
+        },
+        logs: this.logs.slice(0, 20),
+        probability: this.generator.getStats(),
+      };
+    } catch (error) {
+      console.error('getStatus error:', error);
+      return {
+        isRunning: false,
+        isPaused: false,
+        stats: {
+          totalWallets: 0,
+          totalHits: 0,
+          checksPerSecond: '0',
+          runtimeFormatted: '0s'
+        },
+        logs: [],
+        probability: { oddsPerAttempt: '1 in 10^30' }
+      };
+    }
   }
 
   formatRuntime(ms) {

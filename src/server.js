@@ -23,7 +23,24 @@ await engine.initialize();
 
 // API Routes
 app.get('/api/status', (req, res) => {
-  res.json(engine.getStatus());
+  try {
+    const status = engine.getStatus();
+    res.json(status);
+  } catch (error) {
+    console.error('Status error:', error);
+    res.json({
+      isRunning: false,
+      isPaused: false,
+      stats: {
+        totalWallets: 0,
+        totalHits: 0,
+        checksPerSecond: '0',
+        runtimeFormatted: '0s'
+      },
+      logs: [],
+      probability: { oddsPerAttempt: '1 in 10^30' }
+    });
+  }
 });
 
 app.post('/api/start', (req, res) => {
