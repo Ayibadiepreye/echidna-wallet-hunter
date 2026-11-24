@@ -97,6 +97,17 @@ app.get('/ping', (req, res) => {
   res.send('pong');
 });
 
+// Test endpoint to verify code version
+app.get('/version', (req, res) => {
+  res.json({
+    version: '2.0',
+    batchSize: 100,
+    parallelBatches: 100,
+    timestamp: new Date().toISOString(),
+    message: 'Latest code deployed'
+  });
+});
+
 // PWA Manifest
 app.get('/manifest.json', (req, res) => {
   res.json({
