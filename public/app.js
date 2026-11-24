@@ -34,11 +34,14 @@ class EchidnaUI {
 
   async start() {
     try {
+      console.log('Starting engine...');
       const res = await fetch('/api/start', { method: 'POST' });
       const data = await res.json();
+      console.log('Start response:', data);
       this.updateButtons(true, false, false);
       this.addTerminalLine('System started', 'success');
     } catch (error) {
+      console.error('Start error:', error);
       this.addTerminalLine(`Error: ${error.message}`, 'error');
     }
   }

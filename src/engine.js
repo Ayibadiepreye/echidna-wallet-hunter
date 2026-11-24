@@ -65,7 +65,11 @@ export class EchidnaEngine {
     this.stats.startedAt = this.stats.startedAt || new Date().toISOString();
     this.log('🚀 Starting wallet hunting...', 'success');
 
-    this.mainLoop();
+    // Don't await - let it run in background
+    this.mainLoop().catch(error => {
+      this.log(`❌ Main loop error: ${error.message}`, 'error');
+      this.isRunning = false;
+    });
   }
 
   async mainLoop() {

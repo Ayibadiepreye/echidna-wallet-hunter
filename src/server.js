@@ -43,9 +43,16 @@ app.get('/api/status', (req, res) => {
   }
 });
 
-app.post('/api/start', (req, res) => {
-  engine.start();
-  res.json({ success: true, message: 'Engine started' });
+app.post('/api/start', async (req, res) => {
+  try {
+    console.log('📡 Start request received');
+    await engine.start();
+    console.log('✅ Engine started successfully');
+    res.json({ success: true, message: 'Engine started' });
+  } catch (error) {
+    console.error('❌ Start error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 app.post('/api/pause', (req, res) => {
