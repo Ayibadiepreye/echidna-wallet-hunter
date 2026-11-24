@@ -1,8 +1,8 @@
 {
-  "totalWallets": 160000,
+  "totalWallets": 170000,
   "totalHits": 0,
   "startedAt": "2026-11-23T20:37:34.765Z",
-  "checksPerSecond": "7.50",
-  "lastCheck": "2026-11-24T02:33:19.500Z",
+  "checksPerSecond": "7.83",
+  "lastCheck": "2026-11-24T02:39:39.461Z",
   "isRunning": false
 }

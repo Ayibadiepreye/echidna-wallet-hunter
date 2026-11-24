@@ -13,10 +13,11 @@ export class SmartChecker {
     this.batchSize = 100; // TESTED: PublicNode can handle 100, not 1000!
     
     this.endpoints = [
-      // PublicNode is THE BEST - supports 1k batches, NO API KEY NEEDED!
-      'https://ethereum.publicnode.com',
-      'https://ethereum.publicnode.com', // Use it multiple times
-      'https://ethereum.publicnode.com', // It's the most reliable
+      // rpcfree.com - FREE proxy that works from anywhere!
+      // 333k calls/day = 33M wallets/day with batch of 100
+      'https://rpcfree.com/ethereum-rpc',
+      'https://rpcfree.com/ethereum-rpc',
+      'https://rpcfree.com/ethereum-rpc',
     ];
     
     if (process.env.ALCHEMY_API_KEY) {
