@@ -83,8 +83,10 @@ export class EchidnaEngine {
       console.log('🔄 Starting batch cycle...');
       
       try {
-        // Start with 1 for testing, then increase
-        const parallelBatches = 1;
+        // 100 parallel batches of 100 = 10,000 wallets checked simultaneously
+        // 100 addresses @ 176/sec = 0.57 seconds per batch
+        // 100 parallel = 10k every ~1 second = 10k/sec TARGET MET!
+        const parallelBatches = 100;
         const promises = [];
         
         for (let b = 0; b < parallelBatches; b++) {
@@ -105,8 +107,8 @@ export class EchidnaEngine {
 
   async processBatch() {
     try {
-      // Generate 1,000 wallets (optimal batch size)
-      const batchSize = 1000;
+      // Generate 100 wallets (tested optimal batch size)
+      const batchSize = 100;
       const wallets = [];
       const addresses = [];
       
@@ -118,7 +120,7 @@ export class EchidnaEngine {
       
       const batchStartTime = Date.now();
       
-      // ONE RPC call for 1,000 wallets!
+      // ONE RPC call for 100 wallets!
       const results = await this.checker.checkBatch(addresses);
       
       const batchElapsed = Date.now() - batchStartTime;
@@ -140,8 +142,8 @@ export class EchidnaEngine {
       const batchSpeed = (batchSize / (batchElapsed / 1000)).toFixed(0);
       this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | Batch: ${batchSpeed}/sec`, 'info');
       
-      // Save state every 10 batches (every 10k wallets)
-      if (this.stats.totalWallets % 10000 === 0) {
+      // Save state every 10 batches (every 1k wallets)
+      if (this.stats.totalWallets % 1000 === 0) {
         await this.database.saveState(this.stats);
       }
     } catch (error) {

@@ -10,7 +10,7 @@ export class SmartChecker {
   constructor() {
     this.requestCount = 0;
     this.endpointIndex = 0;
-    this.batchSize = 1000; // Optimal batch size based on testing!
+    this.batchSize = 100; // TESTED: PublicNode can handle 100, not 1000!
     
     this.endpoints = [
       // PublicNode is THE BEST - supports 1k batches, NO API KEY NEEDED!
