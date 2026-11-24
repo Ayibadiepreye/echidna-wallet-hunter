@@ -53,16 +53,18 @@ export class SmartChecker {
         id: index
       }));
 
-      console.log(`📡 Sending batch request...`);
+      console.log(`📡 Sending batch request to ${endpoint}...`);
       
+      const startTime = Date.now();
       const response = await axios.post(endpoint, batchRequest, {
         timeout: 30000, // 30 second timeout - Render may be slow
         headers: { 'Content-Type': 'application/json' },
         maxBodyLength: Infinity,
         maxContentLength: Infinity
       });
+      const elapsed = Date.now() - startTime;
 
-      console.log(`✅ Got batch response`);
+      console.log(`✅ Got batch response in ${elapsed}ms from ${endpoint}`);
       
       this.requestCount++;
       
@@ -92,7 +94,7 @@ export class SmartChecker {
         };
       });
     } catch (error) {
-      console.error(`❌ Batch check error:`, error.message);
+      console.error(`❌ Batch check error from ${endpoint}:`, error.code || error.message);
       // On error, return all as zero balance
       return addresses.map(address => ({
         chain: 'Ethereum',
