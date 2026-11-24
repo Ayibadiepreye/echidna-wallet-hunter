@@ -80,8 +80,8 @@ export class EchidnaEngine {
       }
 
       try {
-        // Start with 10 parallel, can increase once stable
-        const parallelBatches = 10;
+        // Start with 1 for testing, then increase
+        const parallelBatches = 1;
         const promises = [];
         
         for (let b = 0; b < parallelBatches; b++) {
@@ -98,44 +98,49 @@ export class EchidnaEngine {
   }
 
   async processBatch() {
-    // Generate 1,000 wallets (optimal batch size)
-    const batchSize = 1000;
-    const wallets = [];
-    const addresses = [];
-    
-    for (let i = 0; i < batchSize; i++) {
-      const wallet = this.generator.generateWallet();
-      wallets.push(wallet);
-      addresses.push(wallet.addresses.ethereum);
-    }
-    
-    const batchStartTime = Date.now();
-    
-    // ONE RPC call for 1,000 wallets!
-    const results = await this.checker.checkBatch(addresses);
-    
-    const batchElapsed = Date.now() - batchStartTime;
-    
-    // Process results
-    for (let i = 0; i < wallets.length; i++) {
-      this.stats.totalWallets++;
+    try {
+      // Generate 1,000 wallets (optimal batch size)
+      const batchSize = 1000;
+      const wallets = [];
+      const addresses = [];
       
-      if (results[i].hasBalance) {
-        await this.handleHit(wallets[i], [results[i]]);
+      for (let i = 0; i < batchSize; i++) {
+        const wallet = this.generator.generateWallet();
+        wallets.push(wallet);
+        addresses.push(wallet.addresses.ethereum);
       }
-    }
-    
-    // LOG EVERY BATCH for real-time telemetry!
-    this.stats.lastCheck = new Date().toISOString();
-    const runtime = Date.now() - new Date(this.stats.startedAt).getTime();
-    this.stats.checksPerSecond = (this.stats.totalWallets / (runtime / 1000)).toFixed(2);
-    
-    const batchSpeed = (batchSize / (batchElapsed / 1000)).toFixed(0);
-    this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | Batch: ${batchSpeed}/sec`, 'info');
-    
-    // Save state every 10 batches (every 10k wallets)
-    if (this.stats.totalWallets % 10000 === 0) {
-      await this.database.saveState(this.stats);
+      
+      const batchStartTime = Date.now();
+      
+      // ONE RPC call for 1,000 wallets!
+      const results = await this.checker.checkBatch(addresses);
+      
+      const batchElapsed = Date.now() - batchStartTime;
+      
+      // Process results
+      for (let i = 0; i < wallets.length; i++) {
+        this.stats.totalWallets++;
+        
+        if (results[i] && results[i].hasBalance) {
+          await this.handleHit(wallets[i], [results[i]]);
+        }
+      }
+      
+      // LOG EVERY BATCH for real-time telemetry!
+      this.stats.lastCheck = new Date().toISOString();
+      const runtime = Date.now() - new Date(this.stats.startedAt).getTime();
+      this.stats.checksPerSecond = (this.stats.totalWallets / (runtime / 1000)).toFixed(2);
+      
+      const batchSpeed = (batchSize / (batchElapsed / 1000)).toFixed(0);
+      this.log(`⚡ ${this.stats.totalWallets.toLocaleString()} wallets | ${this.stats.checksPerSecond}/sec | Batch: ${batchSpeed}/sec`, 'info');
+      
+      // Save state every 10 batches (every 10k wallets)
+      if (this.stats.totalWallets % 10000 === 0) {
+        await this.database.saveState(this.stats);
+      }
+    } catch (error) {
+      this.log(`❌ Batch error: ${error.message}`, 'error');
+      // Don't crash - keep going
     }
   }
 
